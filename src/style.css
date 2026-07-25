@@ -1,0 +1,84 @@
+:root {
+  font-family: "Trebuchet MS", "Avenir Next", system-ui, sans-serif;
+  color: #fff;
+  background: #171236;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  min-width: 320px;
+  min-height: 320px;
+  background:
+    radial-gradient(circle at 50% 15%, rgba(105, 87, 207, 0.38), transparent 42%),
+    #171236;
+}
+
+#app {
+  display: grid;
+  place-items: center;
+  padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right))
+    max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+}
+
+#game {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+#game canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: clamp(0px, 1.2vw, 18px);
+  box-shadow: 0 22px 70px rgba(6, 4, 24, 0.48);
+  touch-action: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.orientation-hint {
+  display: none;
+  position: fixed;
+  inset: auto 18px calc(12px + env(safe-area-inset-bottom));
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  text-align: center;
+  pointer-events: none;
+}
+
+@media (orientation: portrait) and (max-width: 700px) {
+  #app {
+    padding-bottom: 38px;
+  }
+
+  .orientation-hint {
+    display: block;
+  }
+}
