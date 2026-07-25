@@ -10,6 +10,7 @@ import type { RoundType } from "./campaignTypes";
 
 const MAX_TILE_COUNT = 16;
 const MAX_SEARCH_NODES = 300_000;
+const FULL_RACK_FIRST_CHANCE = 0.12;
 let nextProblemId = 1;
 
 export interface ProblemGenerationConstraints {
@@ -138,9 +139,19 @@ function buildVerifiedHand(
 ): number[] | undefined {
   const [minimum, maximum] = config.tileValueRange;
   const values = shuffle(integerRange(minimum, maximum), random);
-  const solutionSizes = constraints.exactSolutionTileCount === undefined
-    ? shuffle(integerRange(2, config.tileCount), random)
-    : [constraints.exactSolutionTileCount];
+  let solutionSizes: number[];
+  if (constraints.exactSolutionTileCount !== undefined) {
+    solutionSizes = [constraints.exactSolutionTileCount];
+  } else if (config.preferSolutionsWithUnusedWeights && config.tileCount > 2) {
+    const partialSolutionSizes = shuffle(integerRange(2, config.tileCount - 1), random);
+    // Keep full-rack answers occasional, not forbidden. Trying the full size
+    // last also provides a safe fallback for unusually restrictive configs.
+    solutionSizes = random() < FULL_RACK_FIRST_CHANCE
+      ? [config.tileCount, ...partialSolutionSizes]
+      : [...partialSolutionSizes, config.tileCount];
+  } else {
+    solutionSizes = shuffle(integerRange(2, config.tileCount), random);
+  }
   const strategy = getOperationStrategy(config.operation);
 
   function fillDistractors(planted: readonly number[]): number[] | undefined {

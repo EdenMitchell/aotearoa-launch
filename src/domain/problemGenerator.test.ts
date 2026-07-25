@@ -110,6 +110,41 @@ describe("generateProblem", () => {
     });
   }, 30_000);
 
+  it("makes full-rack answers occasional in the first two Journey tiers", () => {
+    POWER_LAUNCH_DIFFICULTY.levels.slice(0, 2).forEach((config, levelIndex) => {
+      const random = seededRandom(95_000 + levelIndex);
+      let fullRackAnswers = 0;
+      const sampleSize = 2_000;
+
+      for (let iteration = 0; iteration < sampleSize; iteration += 1) {
+        const problem = generateProblem(config, random);
+        const fullRackTotal = problem.tiles.reduce((total, tile) => total + tile.value, 0);
+        if (fullRackTotal === problem.targetForce) {
+          fullRackAnswers += 1;
+        }
+      }
+
+      expect(fullRackAnswers).toBeGreaterThan(0);
+      expect(fullRackAnswers / sampleSize).toBeLessThan(0.2);
+    });
+  }, 30_000);
+
+  it("retains a full-rack fallback when no partial solution can exist", () => {
+    const fallbackOnly = {
+      operation: "addition",
+      tileValueRange: [2, 2],
+      tileCount: 3,
+      requireCarrying: false,
+      targetForceRange: [6, 6],
+      preferSolutionsWithUnusedWeights: true,
+    } as const satisfies DifficultyConfig;
+
+    const problem = generateProblem(fallbackOnly, seededRandom(96_000));
+    expect(problem.tiles.reduce((total, tile) => total + tile.value, 0)).toBe(
+      problem.targetForce,
+    );
+  });
+
   it("produces 1,000 verified single-target golden hands for every configured level", () => {
     POWER_LAUNCH_DIFFICULTY.levels.forEach((config, levelIndex) => {
       const random = seededRandom(50_000 + levelIndex);

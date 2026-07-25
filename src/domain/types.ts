@@ -6,6 +6,11 @@ export interface AdditionDifficultyConfig {
   readonly tileCount: number;
   readonly requireCarrying: boolean;
   readonly targetForceRange: NumberRange;
+  /**
+   * Variety preference only: usually construct an exact solution that leaves
+   * at least one weight on the rack, while retaining full-rack fallbacks.
+   */
+  readonly preferSolutionsWithUnusedWeights?: boolean;
 }
 
 /** Extend this union when another operation strategy is added. */

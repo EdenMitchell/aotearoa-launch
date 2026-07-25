@@ -15,6 +15,7 @@ export const POWER_LAUNCH_DIFFICULTY = {
       tileCount: 4,
       requireCarrying: false,
       targetForceRange: [4, 9],
+      preferSolutionsWithUnusedWeights: true,
     },
     {
       operation: "addition",
@@ -22,6 +23,7 @@ export const POWER_LAUNCH_DIFFICULTY = {
       tileCount: 5,
       requireCarrying: false,
       targetForceRange: [7, 14],
+      preferSolutionsWithUnusedWeights: true,
     },
     {
       operation: "addition",
